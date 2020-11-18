@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- 菜单展示模块 -->
+<th:block th:fragment="menu(menus,lv)">
+    <li th:each="item : ${menus}">
+        <a href="#" th:unless="${#lists.isEmpty(item.children)}">
+            <i th:class="${item.icon}"></i> <span class="menu-item-parent" th:text="${item.title}"></span>
+        </a>
+        <a th:href="@{${item.url}(sid=${item.id})}" th:if="${#lists.isEmpty(item.children)}">
+            <span th:text="${item.title}"></span>
+        </a>
+        <ul th:unless="${#lists.isEmpty(item.children)}">
+            <th:block th:unless="${#lists.isEmpty(item.children)}" th:include="this::menu(${item.children},${lv+1})"/>
+        </ul>
+    </li>
+</th:block>
+
+<!-- 页面头部展示模块 -->
+<th:block th:fragment="head(res)">
+    <div id="ribbon">
+				<span class="ribbon-button-alignment">
+					<span id="refresh" class="btn btn-ribbon" data-action="resetWidgets" data-title="refresh"
+                          rel="tooltip" data-placement="bottom"
+                          data-original-title="<i class='text-warning fa fa-warning'></i> Warning! This will reset all your widget settings."
+                          data-html="true">
+						<i class="fa fa-refresh"></i>
+					</span>
+				</span>
+        <!-- breadcrumb -->
+        <ol class="breadcrumb">
+            <li th:each="t : ${res.pageTitle}" th:text="${t}" ></li>
+        </ol>
+        <!-- end breadcrumb -->
+    </div>
+</th:block>
+
+<!-- 日志展示模块 -->
+<th:block th:fragment="log(entity)">
+    <table class="table table-bordered zy-table-ellipsis">
+        <thead>
+        <tr>
+            <th width="150px" class="active">操作时间</th>
+            <th width="100px" class="active">操作人</th>
+            <th width="100px" class="active">日志名称</th>
+            <th width="200px" class="active">日志消息</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item:${#logs.entityList(entity)}">
+            <td th:text="${#dates.format(item.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${item.operBy?.nickname}"></td>
+            <td th:text="${item.name}"></td>
+            <td th:text="${item.message}"></td>
+        </tr>
+        </tbody>
+    </table>
+</th:block>
+

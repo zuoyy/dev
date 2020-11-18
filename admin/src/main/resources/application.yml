@@ -1,0 +1,84 @@
+### 服务器配置
+server:
+  port: 8765
+  servlet:
+    context-path: /
+
+### 系统配置
+project:
+  captcha-open: false                         #是否开启登录验证码
+  shiro:
+    remember-me-timeout: 7                    #cookie记住登录信息时间，默认7天（天）
+    global-session-timeout: 3600              #Session会话超时时间，默认30分钟（秒）
+  upload:
+    #file-path:                               #文件上传路径，默认在项目根目录upload下
+    static-path: /upload/**                   #上传文件静态访问路径
+
+### spring
+spring:
+  profiles:
+    active: dev   #环境切换
+  jackson:
+        serialization:
+          write-dates-as-timestamps: true
+  messages:
+      basename: i18n/messages
+  datasource:
+    #druid pool standard config
+    druid:
+      initial-size: 2  # 初始化大小
+      min-idle: 1  # 最小
+      max-active: 30  # 最大
+      max-wait: 60000  # 配置获取连接等待超时的时间
+      time-between-eviction-runs-millis: 60000  # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      min-evictable-idle-time-millis: 300000  # 指定一个空闲连接最少空闲多久后可被清除，单位是毫秒
+      validationQuery: select 'x'
+      test-while-idle: true  # 当连接空闲时，是否执行连接测试
+      test-on-borrow: false  # 当从连接池借用连接时，是否测试该连接
+      test-on-return: false  # 在连接归还到连接池时是否测试该连接
+      filters: config,wall,stat  # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.slowSqlMillis=200;druid.stat.logSlowSql=true;config.decrypt=false
+      #WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
+      web-stat-filter:
+        enabled: true #是否启用StatFilter默认值true
+        url-pattern: /*
+        exclusions: /druid/*,/assets/*,/plugins/*,/swagger-resources/*,*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,*.woff2
+      #StatViewServlet配置，说明请参考Druid Wiki，配置_StatViewServlet配置
+      stat-view-servlet:
+        enabled: true #是否启用StatViewServlet默认值true
+        url-pattern: /druid/*
+        reset-enable: true
+
+## jpa配置
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
+    open-in-view: true
+
+
+## thymeleaf模板设置
+  thymeleaf:
+    mode: HTML
+    cache: false
+
+## 文件上传配置
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  mail:
+    host: smtp.exmail.qq.com
+    port: 25
+    default-encoding: UTF-8
+    nickname: ChinaNextGen
+    username: it@bonday.cn
+    password: BonPay1990
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true

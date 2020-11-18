@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header(title, link, style)">
+    <th:block th:if="${title == null}">
+        <title>ZUO开发平台</title>
+    </th:block>
+    <th:block th:if="${title != null}">
+        <title th:replace="${title}">title</title>
+    </th:block>
+    <!-- Common styles and scripts -->
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- FAVICONS -->
+    <link rel="shortcut icon" th:href="@{/assets/img/favicon/favicon.ico}" type="image/x-icon">
+    <link rel="icon" th:href="@{/assets/img/favicon/favicon.ico}" type="image/x-icon">
+    <!-- Specifying a Webpage Icon for Web Clip
+         Ref: https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html -->
+    <link rel="apple-touch-icon" th:href="@{/assets/img/splash/sptouch-icon-iphone.png}">
+    <link rel="apple-touch-icon" sizes="76x76" th:href="@{/assets/img/splash/touch-icon-ipad.png}">
+    <link rel="apple-touch-icon" sizes="120x120" th:href="@{/assets/img/splash/touch-icon-iphone-retina.png}">
+    <link rel="apple-touch-icon" sizes="152x152" th:href="@{/assets/img/splash/touch-icon-ipad-retina.png}">
+
+
+    <link rel="stylesheet" type="text/css" th:href="@{/plugins/layui/css/layui.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/font-awesome.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/smartadmin-production-plugins.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/smartadmin-production.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/smartadmin-skins.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/smartadmin-rtl.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/common.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/plugins/datatables/css/dataTables.bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/plugins/zTree_v3/css/zTreeStyle/zTreeStyle.css}">
+
+
+
+    <th:block th:if="${link != null}">
+        <th:block th:replace="${link}"></th:block>
+    </th:block>
+
+    <th:block th:if="${style != null}">
+        <th:block th:replace="${style}"></th:block>
+    </th:block>
+
+</head>

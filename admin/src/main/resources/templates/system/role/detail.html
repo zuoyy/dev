@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html class="zy-page" xmlns:th="http://www.thymeleaf.org" xmlns:zy="http://zuoyy.com">
+<head th:replace="/common/head :: header(~{::title},~{::link},~{::style})">
+    <title></title>
+
+</head>
+<body class="zy-page">
+<div class="row">
+    <article class="col-sm-12 col-md-6" style="overflow-x: auto;">
+        <header>
+            <h2>基本信息</h2>
+        </header>
+        <table class="table table-bordered zy-table-ellipsis">
+            <tbody>
+            <tr>
+                <th width="80px" class="active">角色ID</th>
+                <td th:text="${role.id}" width="150px"></td>
+                <th width="80px" class="active">名称/标识</th>
+                <td width="150px">[[${role.title}]]（[[${role.name}]]）</td>
+            </tr>
+            <tr>
+                <th class="active">创建用户</th>
+                <td th:text="${role.createBy?.nickname}"></td>
+                <th class="active">更新用户</th>
+                <td th:text="${role.updateBy?.nickname}"></td>
+            </tr>
+            <tr>
+                <th class="active">创建时间</th>
+                <td th:text="${#dates.format(role.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+                <th class="active">最后修改</th>
+                <td th:text="${#dates.format(role.updateDate, 'yyyy-MM-dd HH:mm')}"></td>
+            </tr>
+            <tr>
+                <th class="active">备注</th>
+                <td th:text="${role.remark}" colspan="3"></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </article>
+
+    <article class="col-sm-12 col-md-6" style="overflow-x: auto;">
+        <header>
+            <h2>操作日志</h2>
+        </header>
+        <div th:replace="/common/fragment :: log(${role})"></div>
+    </article>
+</div>
+
+
+<div th:replace="common/htmlJS::common_js(~{::script})">
+    <script></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html class="zy-page" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/common/head :: header(~{::title},~{::link},~{::style})">
+    <title></title>
+    <link rel="stylesheet" type="text/css" th:href="@{/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css}"/>
+
+</head>
+<body class="zy-page">
+<div class="zy-page-form">
+    <div class="row">
+        <div class="col-sm-12">
+            <form class="layui-form" action="" lay-filter="example">
+                <input type="hidden" name="id" th:value="${lecture?.id}">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">分享会名称 <span class="text-danger">*</span></label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" lay-verify="required" autocomplete="off" placeholder="请输入分享会名称" class="layui-input" th:value="${lecture?.title}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">开始时间 <span class="text-danger">*</span></label>
+                    <div class="layui-input-block">
+                        <input type="text" id="startTime" name="startTime" lay-verify="required" placeholder="请输入开始时间" autocomplete="off" class="layui-input form_datetime" th:value="${#dates.format(lecture?.startDate,'yyyy-MM-dd HH:mm')}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">截至时间 <span class="text-danger">*</span></label>
+                    <div class="layui-input-block">
+                        <input type="text" id="endTime" name="endTime" lay-verify="required" placeholder="请输入结束时间" autocomplete="off" class="layui-input form_datetime" th:value="${#dates.format(lecture?.endDate,'yyyy-MM-dd HH:mm')}">
+                    </div>
+                </div>
+
+                <div class="form-actions zy-form-bottom-btn">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <button class="btn btn-default close-page">Cancel</button>
+                            <button class="btn btn-primary" lay-submit="">
+                                <i class="fa fa-save"></i>Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+<div th:replace="common/htmlJS::common_js(~{::script})">
+    <script th:src="@{/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js}"></script>
+    <script th:inline="javascript">
+        layui.use(['form'], function(){
+            $(".form_datetime").datetimepicker({
+                autoclose: true,   //选择后自动关闭当前时间控件
+                format: "yyyy-mm-dd hh:ii"
+            });
+
+            var form = layui.form
+                ,layer = layui.layer;
+
+            //自定义验证规则
+            form.verify({
+            });
+
+            //监听提交
+            form.on('submit', function(data){
+                var startTime = $("#startTime").val();
+                var endTime = $("#endTime").val();
+                if(startTime >= endTime){
+                    layer.alert("开始时间必须小于截止时间！", {icon: 2});
+                    return false;
+                }
+                zy.ajaxJson({
+                    url:basePath+"/cnextgen/lecture/save",
+                    data:JSON.stringify(data.field),
+                    success:function(result){
+                        if (result.code == 200) {
+                            parent.layer.msg('操作成功');
+                            parent._table.draw(false);
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        } else {
+                            layer.msg(result.msg, {icon: 2,shift: 6});
+                        }
+                    }
+                });
+                return false;
+            });
+
+        });
+    </script>
+</div>
+</body>
+</html>

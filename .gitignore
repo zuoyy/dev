@@ -1,0 +1,23 @@
+# Java class files
+
+*.class
+
+
+target/
+
+.settings/
+.classpath
+.project
+
+*Test*.java
+
+
+*.log
+
+*.log.*
+
+#IDEA SETTING FILE
+**/.idea
+**/*.iml
+
+

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{index}">
+<title></title>
+<head>
+
+</head>
+<body>
+
+<div layout:fragment="main">
+	<!-- RIBBON -->
+	<div id="ribbon">
+		<span class="ribbon-button-alignment">
+			<span id="refresh" class="btn btn-ribbon" data-action="resetWidgets" data-title="refresh"  rel="tooltip" data-placement="bottom" data-original-title="<i class='text-warning fa fa-warning'></i> Warning! This will reset all your widget settings." data-html="true">
+				<i class="fa fa-refresh"></i>
+			</span>
+		</span>
+		<!-- breadcrumb -->
+		<ol class="breadcrumb">
+			<li th:text="#{common.home}"></li>
+		</ol>
+		<!-- end breadcrumb -->
+	</div>
+	<!-- END RIBBON -->
+
+	<div id="content">
+
+
+
+	</div>
+
+
+</div>
+
+	<script th:inline="javascript">
+
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+package com.zuoyy.devtools.generate.enums;
+
+import lombok.Getter;
+
+/**
+ * 模块结构类型
+ * @author zuo
+ */
+@Getter
+public enum ModuleType {
+    ALONE(1, "独立模块"),
+    ADMIN(2, "后台模块");
+
+    private Integer code;
+
+    private String message;
+
+    ModuleType(Integer code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+}

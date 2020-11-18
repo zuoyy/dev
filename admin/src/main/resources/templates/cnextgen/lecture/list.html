@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="/common/head :: header(~{::title},~{::link},~{::style})">
+</head>
+<body>
+
+<div id="content" class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="well">
+                <fieldset>
+                    <legend>
+                        <form class="form-inline" role="form" id="searchForm" name="searchForm"
+                              onkeydown="if(event.keyCode==13){return false;}">
+                            <div class="form-group">
+                                <input type="text" name="keyword" class="form-control table-form-tip" data-toggle="tooltip" data-placement="top" title="Key words"  placeholder="Key words">
+                            </div>
+                            <button id="btn-search" class="btn btn-default" type="button">
+                                <i class="fa fa-search"></i> Search
+                            </button>
+                        </form>
+                    </legend>
+                    <button type="button" th:each="b : ${button.pageButtons}" th:id="${b.btnId}"
+                            th:class="${b.btnClass}" th:text="${b.title}" style="margin-left: 4px;"></button>
+                </fieldset>
+                <table id="datatable" class="table table-striped table-bordered zy-table-ellipsis"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="common/htmlJS::common_js(~{::script})">
+<script th:inline="javascript">
+    var $table, _table;
+    $(function () {
+        $table = $('#datatable');
+        _table = $table.dataTable(
+            $.extend(true, {}, CONSTANT.DATA_TABLES.DEFAULT_OPTION, {
+                ajax: function (data, callback, settings) {
+                    var params = manage.getQueryCondition(data);
+                    zy.ajax({
+                        url: basePath + '/cnextgen/lecture/getListPage',
+                        data: params,
+                        success: function (result) {
+                            if (result.code == 200) {
+                                callback(result.data);
+                            } else {
+                                layer.msg(result.msg, {icon: 2,shift: 6});
+                            }
+                        }
+                    });
+
+                },
+                columns: [CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
+                    {
+                        title: "分享会",
+                        data: "title",
+                        width: "200"
+                    }, {
+                        title: "开始时间",
+                        data: "startDate",
+                        width: "130",
+                        render: CONSTANT.DATA_TABLES.RENDER.DATE_TIME
+                    }, {
+                        title: "结束时间",
+                        data: "endDate",
+                        width: "130",
+                        render: CONSTANT.DATA_TABLES.RENDER.DATE_TIME
+                    }, {
+                        title: "操作",
+                        width: "200",
+                        orderable: false,
+                        render: function (data, type, row, meta) {
+                            var tableButtons = [[${button.tableButtons}]];
+                            return manage.tableToolBar(tableButtons,row);
+                        }
+                    }], iDisplayLength: 100
+            })).api();
+        $table.parent().attr('style', 'overflow-x: auto');
+        // 行点击事件
+        $("tbody", $table).on("click", "tr", function (event) {
+            $(this).addClass("active").siblings().removeClass("active");
+            var item = _table.row(this).data();
+            manage.currentItem = item;
+
+        });
+        //复选框
+        $table.on("change", ":checkbox", function () {
+            if ($(this).is("[name='cb-check-all']")) {
+                $(":checkbox", $table).prop("checked", $(this).prop("checked"));
+            } else {
+                var checkbox = $("tbody :checkbox", $table);
+                $(":checkbox[name='cb-check-all']", $table).prop('checked', checkbox.length == checkbox.filter(':checked').length);
+            }
+        }).on("click", ".td-checkbox", function (event) {
+            !$(event.target).is(":checkbox") && $(":checkbox", this).trigger("click");
+        });
+        //初始化表格搜索框提示
+        manage.init();
+        //条件搜索
+        $("#btn-search").click(function () {
+            _table.draw();
+        });
+
+        $("#btn-add").click(function () {
+            zy.openPage('新增分享会','/cnextgen/lecture/add');
+        });
+
+
+    });
+
+    function edit(row) {
+        zy.openPage('编辑分享会','/cnextgen/lecture/edit/'+row.id);
+    }
+
+    function questionnaire(row) {
+        window.open("http://cnextgen.com/questionnaire/index.html?session="+row.id);
+    }
+
+    function video(row) {
+        window.open("http://app.cnextgen.com/video/index.html?session="+row.id);
+    }
+
+
+
+</script>
+</div>
+</body>
+</html>

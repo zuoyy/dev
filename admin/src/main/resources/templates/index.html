@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<head th:replace="/common/head :: header(~{::title},~{::link},~{::style})">
+		<title th:text="${res.title}"></title>
+		<style>
+			.text{
+				color: #c0bbb7;
+			}
+			.text:hover{
+				color:#fff;
+			}
+
+
+		</style>
+	</head>
+
+	<body class="fixed-header fixed-navigation fixed-ribbon fixed-page-footer">
+
+		<!-- HEADER -->
+		<header id="header">
+			<div id="logo-group">
+
+				<!-- PLACE YOUR LOGO HERE -->
+				<span id="logo"> <img th:src="@{/assets/img/logo.png}" alt="zuoyy"> </span>
+				<!-- END LOGO PLACEHOLDER -->
+			</div>
+
+			<div class="hidden-xs open">
+
+
+			</div>
+
+
+
+
+			<!-- pulled right: nav area -->
+			<div class="pull-right">
+				<!-- collapse menu button -->
+				<div id="hide-menu" class="btn-header pull-right">
+					<span> <a href="javascript:void(0);" data-action="toggleMenu" title="Collapse Menu"><i class="fa fa-reorder"></i></a> </span>
+				</div>
+				<!-- end collapse menu -->
+
+
+				<!-- logout button -->
+				<div id="logout" class="btn-header transparent pull-right">
+					<span> <a th:href="@{/logout}" title="Sign Out" data-action="userLogout" data-logout-msg="You can improve your security further after logging out by closing this opened browser"><i class="fa fa-sign-out"></i></a> </span>
+				</div>
+				<!-- end logout button -->
+
+
+				<!-- multiple lang dropdown : find all flags in the flags page -->
+				<ul class="header-dropdown-list hidden-xs">
+					<li>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" th:if="${res.user.language eq 'zh-CN'}">
+							<img th:src="@{/assets/img/blank.gif}" class="flag flag-cn" alt="China"> <span> 简体中文 </span>
+							<i class="fa fa-angle-down"></i> </a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" th:if="${res.user.language eq 'en-US'}">
+							<img th:src="@{/assets/img/blank.gif}" class="flag flag-us" alt="United States"> <span> English (US) </span>
+							<i class="fa fa-angle-down"></i> </a>
+						<ul class="dropdown-menu pull-right" id="dropdown-language">
+							<li th:class="${res.user.language eq 'en-US'}?'active'">
+								<a href="javascript:void(0);" th:onclick="setLanguage([[${res.user.language}]],'en-US')"><img th:src="@{/assets/img/blank.gif}" class="flag flag-us" alt="United States"> English (US)</a>
+							</li>
+							<li th:class="${res.user.language eq 'zh-CN'}?'active'">
+								<a href="javascript:void(0);" th:onclick="setLanguage([[${res.user.language}]],'zh-CN')"><img th:src="@{/assets/img/blank.gif}" class="flag flag-cn" alt="China"> 简体中文</a>
+							</li>
+
+						</ul>
+					</li>
+				</ul>
+				<!-- end multiple lang -->
+
+			</div>
+			<!-- end pulled right: nav area -->
+
+		</header>
+		<!-- END HEADER -->
+
+		<!-- Left panel : Navigation area -->
+		<!-- Note: This width of the aside area can be adjusted through LESS variables -->
+		<aside id="left-panel">
+
+			<!-- User info -->
+			<div class="login-info" style="height: 75px;">
+
+				<span style="height: 74px;display: flex;align-items: center;">
+					<img style="border-radius: 50%;width: 40px;" data-size="680,464"
+						 th:src="@{'/assets/img/picture.jpg'}" alt="头像">
+					<div class="project-context" style="padding: 7px 0px;">
+						<span>Welcome:</span>
+						<span class="project-selector dropdown-toggle text" data-toggle="dropdown" ><span th:text="${res.user.nickname}"></span><i class="fa fa-angle-down"></i></span>
+						<ul class="dropdown-menu">
+							<li>
+								<a href="javascript:void(0);"><i class="fa fa-user"></i> 个人信息</a>
+							</li>
+							<li>
+								<a href="javascript:void(0);"><i class="fa fa-lock"></i> 修改密码</a>
+							</li>
+
+							<li class="divider"></li>
+							<li>
+								<a th:href="@{/logout}" title="Sign Out" data-action="userLogout" data-logout-msg="You can improve your security further after logging out by closing this opened browser"><i class="fa fa-power-off"></i> 退出登录</a>
+							</li>
+						</ul>
+					</div>
+				</span>
+			</div>
+
+
+			<!-- end user info -->
+
+			<!-- NAVIGATION : This navigation is also responsive-->
+			<nav id="sidebar-menu">
+				<!-- 菜单 -->
+				<ul>
+					<li>
+						<a th:href="@{/system/index.shtml}"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent" th:text="#{common.home}"></span> </a>
+					</li>
+
+					<th:block th:include="/common/fragment::menu(${res.menus},1)"/>
+
+				</ul>
+			</nav>
+
+
+
+		</aside>
+		<!-- END NAVIGATION -->
+
+		<!-- MAIN PANEL -->
+		<div id="main" role="main" layout:fragment="main"></div>
+		<!-- END MAIN PANEL -->
+
+		<!-- PAGE FOOTER -->
+		<div class="page-footer">
+			<div class="row">
+				<div class="col-xs-12 col-sm-6">
+					<span class="txt-color-white"><span th:text="#{common.company}"></span> ©2020</span>
+				</div>
+
+				<div class="col-xs-6 col-sm-6 text-right hidden-xs">
+					<div class="txt-color-white inline-block">
+						<!-- 天气信息 -->
+						<div class="weather" pc>
+							<div id="tp-weather-widget"></div>
+
+						</div>
+
+						<!--<i class="txt-color-blueLight hidden-mobile">zuoyy </i>-->
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!-- END PAGE FOOTER -->
+
+		<!-- SHORTCUT AREA : With large tiles (activated via clicking user name tag)
+		Note: These tiles are completely responsive,
+		you can add as many as you like
+		-->
+		<div id="shortcut">
+			<ul>
+
+				<li th:onclick="myProfile([[${res.user.id}]]);">
+					<a  href="javascript:void(0);" class="jarvismetro-tile big-cubes selected bg-color-pinkDark"> <span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>My Profile </span> </span> </a>
+				</li>
+			</ul>
+		</div>
+		<!-- END SHORTCUT AREA -->
+
+		<!--================================================== -->
+
+		<div th:replace="common/htmlJS::common_js(~{::script})"></div>
+
+
+	</body>
+
+</html>

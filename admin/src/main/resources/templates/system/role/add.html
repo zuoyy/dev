@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html class="zy-page" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/common/head :: header(~{::title},~{::link},~{::style})">
+    <title></title>
+
+</head>
+<body class="zy-page">
+<div class="zy-page-form">
+    <div class="row">
+        <div class="col-sm-12">
+            <form class="layui-form" action="" lay-filter="example">
+                <input type="hidden" name="id" th:value="${role?.id}">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">角色标识 <span class="text-danger">*</span></label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入角色标识" class="layui-input" th:value="${role?.name}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">角色名称 <span class="text-danger">*</span></label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input" th:value="${role?.title}">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">备注</label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="请输入内容" class="layui-textarea" name="remark">[[${role?.remark}]]</textarea>
+                    </div>
+                </div>
+
+
+                <div class="form-actions zy-form-bottom-btn">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <button class="btn btn-default close-page">Cancel</button>
+                            <button class="btn btn-primary" lay-submit=""><i class="fa fa-save"></i>Submit</button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+<div th:replace="common/htmlJS::common_js(~{::script})">
+    <script th:inline="javascript">
+        layui.use(['form'], function(){
+            var form = layui.form
+                ,layer = layui.layer;
+
+            //自定义验证规则
+            form.verify({
+            });
+
+            //监听提交
+            form.on('submit', function(data){
+                zy.ajaxJson({
+                    url:basePath+"/system/role/save",
+                    data:JSON.stringify(data.field),
+                    success:function(result){
+                        if (result.code == 200) {
+                            parent.layer.msg('操作成功');
+                            parent._table.draw(false);
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        } else {
+                            layer.msg(result.msg, {icon: 2,shift: 6});
+                        }
+                    }
+                });
+                return false;
+            });
+
+        });
+    </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html class="zy-page" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/common/head :: header(~{::title},~{::link},~{::style})">
+    <title></title>
+
+</head>
+<body class="zy-page">
+<div class="zy-page-form">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul id="authTree" class="ztree" th:attr="data-url=@{/system/role/authList(ids=${id})}"></ul>
+
+
+            <div class="form-actions zy-form-bottom-btn">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <button class="btn btn-default close-page">Cancel</button>
+                        <button class="btn btn-primary" id="submit"><i class="fa fa-save"></i>Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div th:replace="common/htmlJS::common_js(~{::script})">
+    <script th:inline="javascript">
+        $(function(){
+            var setting = {
+                check: {
+                    enable: true,
+                    chkboxType: { "Y" : "ps", "N" : "ps" }
+                },
+                data: {
+                    simpleData: {
+                        enable: true
+                    }
+                }
+            };
+            $.get($("#authTree").data("url"), function(result){
+                var keyPid = [];
+                result.data.forEach(function(item){
+                    keyPid[item.pid] = true;
+                });
+                var zNodes =[];
+                result.data.forEach(function (item) {
+                    var menu = {
+                        id: item.id,
+                        pId: item.pid,
+                        name: item.title
+                    };
+                    if(item.pid === 0){
+                        menu.open = true;
+                    }
+                    if(item.url.indexOf("/index") !== -1 && keyPid[item.id]){
+                        var index = {
+                            id: item.id*-1,
+                            pId: item.id,
+                            name: "列表"
+                        };
+                        if(item.remark === "auth:true"){
+                            index.checked = true;
+                        }
+                        zNodes.push(index);
+                    }
+                    if(item.remark === "auth:true"){
+                        menu.checked = true;
+                    }
+                    zNodes.push(menu);
+                });
+                $.fn.zTree.init($("#authTree"), setting, zNodes);
+            });
+
+            $("#submit").click(function () {
+                var zTreeObj = $.fn.zTree.getZTreeObj("authTree");
+                var authList = zTreeObj.getCheckedNodes(true);
+                var authIds = [];
+                authList.forEach(function(item){
+                    if(CommnUtil.notNull(item.id)){
+                        authIds.push(item.id);
+                    }
+                });
+                zy.ajax({
+                    url : basePath+'/system/role/auth',
+                    data : {id:[[${id}]],authId:authIds.join()},
+                    success : function(result) {
+                        if (result.code==200) {
+                            parent.layer.msg('操作成功');
+                            parent._table.draw(false);
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        }else{
+                            layer.msg(result.msg, {icon: 2,shift: 6});
+                        }
+                    }
+                });
+
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

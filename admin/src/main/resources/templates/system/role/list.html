@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/common/head :: header(~{::title},~{::link},~{::style})">
+</head>
+<body>
+
+<div id="content" class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="well">
+                <fieldset>
+                    <legend>
+                        <form class="form-inline" role="form" id="searchForm" name="searchForm"
+                              onkeydown="if(event.keyCode==13){return false;}">
+                            <div class="form-group">
+                                <input type="text" name="keyword" class="form-control table-form-tip" data-toggle="tooltip" data-placement="top" title="Key words"  placeholder="Key words">
+                            </div>
+
+                            <button id="btn-search" class="btn btn-default" type="button">
+                                <i class="fa fa-search"></i> Search
+                            </button>
+                        </form>
+                    </legend>
+                    <button type="button" th:each="b : ${button.pageButtons}" th:id="${b.btnId}"
+                            th:class="${b.btnClass}" th:text="${b.title}" style="margin-left: 4px;"></button>
+                </fieldset>
+                <table id="datatable" class="table table-striped table-bordered zy-table-ellipsis"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div th:replace="common/htmlJS::common_js(~{::script})">
+<script th:inline="javascript">
+    var $table, _table;
+    $(function () {
+        $table = $('#datatable');
+        _table = $table.dataTable(
+            $.extend(true, {}, CONSTANT.DATA_TABLES.DEFAULT_OPTION, {
+                ajax: function (data, callback, settings) {
+                    var params = manage.getQueryCondition(data);
+                    zy.ajax({
+                        url: basePath + '/system/role/getListPage',
+                        data: params,
+                        success: function (result) {
+                            if (result.code == 200) {
+                                callback(result.data);
+                            } else {
+                                layer.msg(result.msg, {icon: 2,shift: 6});
+                            }
+                        }
+                    });
+
+                },
+                columns: [CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
+                    {
+                        title: "角色标识",
+                        data: "name",
+                        width: "150"
+                    }, {
+                        title: "角色名称",
+                        data: "title",
+                        width: "150"
+                    }, {
+                        title: "备注",
+                        data: "remark",
+                        width: "200"
+                    }, {
+                        title: "创建时间",
+                        data: "createDate",
+                        width: "130",
+                        render: CONSTANT.DATA_TABLES.RENDER.DATE_TIME
+                    }, {
+                        title: "操作",
+                        width: "150",
+                        orderable: false,
+                        render: function (data, type, row, meta) {
+                            var tableButtons = [[${button.tableButtons}]];
+                            return manage.tableToolBar(tableButtons,row);
+                        }
+                    }]
+            })).api();
+        $table.parent().attr('style', 'overflow-x: auto');
+        // 行点击事件
+        $("tbody", $table).on("click", "tr", function (event) {
+            $(this).addClass("active").siblings().removeClass("active");
+            var item = _table.row(this).data();
+            manage.currentItem = item;
+
+        });
+        //复选框
+        $table.on("change", ":checkbox", function () {
+            if ($(this).is("[name='cb-check-all']")) {
+                $(":checkbox", $table).prop("checked", $(this).prop("checked"));
+            } else {
+                var checkbox = $("tbody :checkbox", $table);
+                $(":checkbox[name='cb-check-all']", $table).prop('checked', checkbox.length == checkbox.filter(':checked').length);
+            }
+        }).on("click", ".td-checkbox", function (event) {
+            !$(event.target).is(":checkbox") && $(":checkbox", this).trigger("click");
+        });
+        //初始化表格搜索框提示
+        manage.init();
+        //条件搜索
+        $("#btn-search").click(function () {
+            _table.draw();
+        });
+
+        $("#btn-add").click(function () {
+            zy.openPage('新增角色','/system/role/add');
+        });
+
+        $("#btn-auth").click(function () {
+            var ids = manage.getIds();
+            if (CommnUtil.notNull(ids.join())) {
+                if (ids.length > 1) {
+                    layer.msg('请选择一条数据', {icon: 2,shift: 6});
+                    return;
+                }
+            } else {
+                layer.msg('请选择一条数据', {icon: 2,shift: 6});
+                return;
+            }
+            zy.openPage('角色授权','/system/role/auth/'+ids.join());
+        });
+
+    });
+
+    function edit(row) {
+        if(row.name=='superAdmin'){
+            layer.msg('超级管理员不能编辑', {icon: 2,shift: 6});
+            return;
+        }
+        zy.openPage('编辑角色','/system/role/edit/'+row.id);
+    }
+    function detail(row) {
+        if(row.name=='superAdmin'){
+            layer.msg('超级管理员不能查看', {icon: 2,shift: 6});
+
+            return;
+        }
+        zy.openPage('角色详情',"/system/role/detail/"+row.id);
+    }
+    function del(row) {
+        if(row.name=='superAdmin'){
+            layer.msg('超级管理员不能删除', {icon: 2,shift: 6});
+            return;
+        }
+        layer.confirm('确定要删除吗', {
+            icon : 3
+        }, function() {
+            zy.ajax({
+                url : basePath+'/system/role/status/delete',
+                data : {ids:row.id},
+                success : function(result) {
+                    if (result.code==200) {
+                        _table.draw(false);
+                        layer.msg(result.msg);
+                    }else{
+                        layer.msg(result.msg, {icon: 2,shift: 6});
+                    }
+                }
+            });
+
+
+        });
+
+    }
+
+</script>
+</div>
+</body>
+</html>

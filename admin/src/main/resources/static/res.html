@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="plugins/layui/css/layui.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/smartadmin-production-plugins.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/smartadmin-production.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/smartadmin-skins.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/smartadmin-rtl.min.css">
+    <style>
+        .error{
+            color:red;
+        }
+        footer{ text-align: center; width:100%;padding-top: 30px;}
+
+    </style>
+</head>
+<body>
+<div>
+    <img src="assets/img/chinanextgen/apply_banner.png" width="100%">
+</div>
+<div class="well">
+    <fieldset>
+        <legend>
+            <form class="form-inline" role="form" id="searchForm" name="searchForm"
+                  onkeydown="if(event.keyCode==13){return false;}">
+               Welcome xxxx
+            </form>
+        </legend>
+    </fieldset>
+    <div class="zy-page-form">
+        <div class="row">
+            <div class="col-sm-12">
+                <form id="form" method="post" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-3 col-md-3 control-label">Name of next gen member
+                            <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-sm-5 col-md-5">
+                            <input name="username" class="form-control required" type="text" >
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 col-md-3 control-label">Age of next gen member
+                            <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-sm-5 col-md-5">
+                            <input name="age" class="form-control required" type="number">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 col-md-3 control-label">Interests
+                            <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-sm-5 col-md-5">
+                            <table>
+                                <tr>
+                                    <td><input type="checkbox" name="interests" value="investing" /> investing &nbsp;&nbsp;</td>
+                                    <td><input type="checkbox" name="interests" value="finance" /> finance &nbsp;&nbsp;</td>
+                                    <td><input type="checkbox" name="interests" value="entrepreneurship" /> entrepreneurship &nbsp;&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="interests" value="private equity" /> private equity &nbsp;&nbsp;</td>
+                                    <td><input type="checkbox" name="interests" value="venture capital" /> venture capital &nbsp;&nbsp;</td>
+                                    <td><input type="checkbox" name="interests" value="philanthropy" /> philanthropy &nbsp;&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="interests" value="cryptocurrency" /> cryptocurrency &nbsp;&nbsp;</td>
+                                    <td><input type="checkbox" name="interests" value="internet" /> internet &nbsp;&nbsp;</td>
+                                    <td><input type="checkbox" name="interests" value="technology" /> technology &nbsp;&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="interests" value="AI" /> AI &nbsp;&nbsp;</td>
+                                    <td><input type="checkbox" name="interests" value="personal wellness" /> personal wellness &nbsp;&nbsp;</td>
+                                    <td><input type="checkbox" name="interests" value="health and wellness" /> health and wellness &nbsp;&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" name="interests" value="others" /> others &nbsp;&nbsp;</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 col-md-3 control-label">Hobbies (sports, music, extracurricular activities, etc.)
+                            <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-sm-5 col-md-5">
+                            <input name="hobbies" class="form-control required" type="text" >
+                        </div>
+                    </div>
+
+                    <div class="form-actions zy-form-bottom-btn" style="text-align: center">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fa fa-save"></i>
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+</div>
+
+<footer>
+    　　©2020 ChinaNextGen<br />
+</footer>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery-ui.min.js"></script>
+<script src="assets/js/app.config.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/SmartNotification.min.js"></script>
+<script src="assets/js/jquery.validate.js"></script>
+<script src="assets/js/jquery.form.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="plugins/layui/layui.all.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+    $(function () {
+        $("#form").validate({
+            submitHandler: function (form) {
+                zy.ajaxSubmit(form, {
+                    url: basePath + '/chinanextgen/userinfo/apply',
+                    success: function (result) {
+                        if (result.code == 200) {
+                            layer.confirm('Success', {
+                                title: 'Message', icon: 1, closeBtn: 0, btn: ['OK']
+                            }, function (index) {
+
+                            });
+                        } else {
+                            layer.alert(result.msg, {icon: 2});
+                        }
+
+                    }
+                });
+            }
+
+        });
+
+
+
+
+    });
+
+</script>
+
+</body>
+</html>

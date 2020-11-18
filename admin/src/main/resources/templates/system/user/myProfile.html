@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/common/head :: header(~{::title},~{::link},~{::style})">
+	<title></title>
+
+</head>
+<body>
+
+<div style="overflow: hidden">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-editbutton="false"
+				 style="margin-bottom: 60px;">
+				<div class="widget-body">
+					<form id="form" method="post" class="form-horizontal">
+						<fieldset>
+							<legend></legend>
+
+							<div class="form-group">
+								<label class="col-md-2 control-label">菜单名称<span class="text-danger">*</span></label>
+								<div class="col-md-8">
+									<input name="title" class="form-control required" type="text" th:value="${id}">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">英文名称<span class="text-danger">*</span></label>
+								<div class="col-md-8">
+									<input name="usTitle" class="form-control required" type="text">
+								</div>
+							</div>
+
+
+						</fieldset>
+
+						<div class="form-actions form-bottom-btn">
+							<div class="row">
+								<div class="col-md-12">
+									<button id="btn-cancel" class="btn btn-default" type="button">
+										Cancel
+									</button>
+									<button class="btn btn-primary" type="submit">
+										<i class="fa fa-save"></i>
+										Submit
+									</button>
+								</div>
+							</div>
+						</div>
+
+					</form>
+
+				</div>
+			</div>
+		</article>
+
+	</div>
+</div>
+
+
+<div th:replace="common/htmlJS::common_js(~{::script})">
+	<script th:inline="javascript">
+        $(function () {
+            $("#form").validate({
+                submitHandler: function (form) {
+                    zy.ajaxSubmit(form, {
+                        url: basePath + '/admin/menu/add',
+                        success: function (result) {
+                            if (result.code == 200) {
+                                layer.confirm('Success', {
+                                    title: 'Message', icon: 1, closeBtn: 0, btn: ['OK']
+                                }, function (index) {
+                                    parent.window.location.reload();
+                                    var index = parent.layer.getFrameIndex(window.name);
+                                    parent.layer.close(index);
+                                });
+                            } else {
+                                layer.alert(result.msg, {icon: 2});
+                            }
+
+                        }
+                    });
+                }
+
+            });
+
+
+        });
+
+
+	</script>
+</div>
+</body>
+</html>

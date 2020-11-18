@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{index}">
+<head>
+
+</head>
+<body>
+
+<div layout:fragment="main">
+    <div th:replace="/common/fragment :: head(${res})"></div>
+
+    <div id="content" class="content">
+        <div style="text-align: center">
+            <iframe th:src="@{/druid}" width="100%" frameborder="0" scrolling="yes" style="height: 100vh"></iframe>
+        </div>
+    </div>
+
+
+</div>
+
+<script th:inline="javascript">
+
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html class="zy-page" xmlns:th="http://www.thymeleaf.org" xmlns:zy="http://zuoyy.com">
+<head th:replace="/common/head :: header(~{::title},~{::link},~{::style})">
+    <title></title>
+
+</head>
+<body class="zy-page">
+<div class="row">
+    <article class="col-sm-12 col-md-6" style="overflow-x: auto;">
+        <header>
+            <h2>基本信息</h2>
+        </header>
+        <table class="table table-bordered zy-table-ellipsis">
+            <tbody>
+            <tr>
+                <th width="80px" class="active">字典编号</th>
+                <td th:text="${dict.id}" width="150px"></td>
+                <th width="80px" class="active">字典标识</th>
+                <td th:text="${dict.name}" width="150px"></td>
+            </tr>
+            <tr>
+                <th class="active">字典标题</th>
+                <td th:text="${dict.title}"></td>
+                <th class="active">字典类型</th>
+                <td th:text="${#dicts.keyValue('DICT_TYPE', dict.type)}"></td>
+            </tr>
+            <tr>
+                <th class="active">字典值</th>
+                <td th:text="${dict.value}" colspan="3"></td>
+            </tr>
+            <tr>
+                <th class="active">创建时间</th>
+                <td th:text="${#dates.format(dict.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+                <th class="active">最后修改</th>
+                <td th:text="${#dates.format(dict.updateDate, 'yyyy-MM-dd HH:mm')}"></td>
+            </tr>
+            <tr>
+                <th class="active">备注</th>
+                <td th:text="${dict.remark}" colspan="3"></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </article>
+
+    <article class="col-sm-12 col-md-6" style="overflow-x: auto;">
+        <header>
+            <h2>操作日志</h2>
+        </header>
+        <div th:replace="/common/fragment :: log(${dict})"></div>
+    </article>
+</div>
+
+
+<div th:replace="common/htmlJS::common_js(~{::script})">
+    <script></script>
+</div>
+</body>
+</html>

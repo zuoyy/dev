@@ -1,0 +1,294 @@
+<!DOCTYPE html><!--suppress ALL-->
+<html class="zy-page" xmlns:th="http://www.thymeleaf.org" xmlns:zy="http://zuoyy.com">
+    <head th:replace="/common/head :: header(~{::title},~{::link},~{::style})">
+        <title></title>
+
+    </head>
+
+    <body class="zy-page">
+
+        <div class="zy-page-form">
+            <div class="row">
+                <div class="col-sm-12">
+                    <form id="form" method="post" class="form-horizontal">
+                        <input type="hidden" name="id" th:value="${menu?.id}">
+                        <div class="form-group" th:if="${pid!='0'}">
+                            <label class="col-sm-3 col-md-3 control-label">父菜单名称
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="col-sm-5 col-md-5">
+                                <select class="form-control" disabled="disabled">
+                                    <option th:each="p : ${pids}" th:value="${p.id }" th:text="${p.title}"
+                                            th:selected="${p.id eq pid}?selected"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <input type="hidden" name="pid" th:value="${pid}">
+                        <div class="form-group">
+                            <label class="col-sm-3 col-md-3 control-label">菜单名称
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="col-sm-5 col-md-5">
+                                <input name="title" class="form-control required" type="text" th:value="${menu?.title}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 col-md-3 control-label">英文名称
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="col-sm-5 col-md-5">
+                                <input name="usTitle" class="form-control required" type="text" th:value="${menu?.usTitle}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 col-md-3 control-label">资源类型
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="col-sm-5 col-md-5">
+                                <select id="select-type" class="form-control" name="type" zy:dict="MENU_TYPE" zy-selected="${menu?.type}"></select>
+
+                            </div>
+
+                        </div>
+                        <div class="form-group" th:if="${pid=='0'}">
+                            <label class="col-sm-3 col-md-3 control-label">图标
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="col-sm-5 col-md-5">
+                                <input name="icon" class="form-control required" type="text" th:value="${menu?.icon}">
+                                <div class="note">例如：fa fa-lg fa-fw fa-home，
+                                    <a href="http://fontawesome.dashgame.com/" target="_blank">查看图标</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group menu-url">
+                            <label class="col-sm-3 col-md-3 control-label">url
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="col-sm-5 col-md-5">
+                                <input name="url" class="form-control required" type="text" th:value="${menu?.url}">
+                                <div class="note">例如：/system/user/index.shtml</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 col-md-3 control-label">权限标示
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="col-sm-5 col-md-5">
+                                <input name="perms" class="form-control required" type="text" th:value="${menu?.perms}">
+                                <div class="note">例如：system:user:index (用户列表)</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 col-md-3 control-label">排序</label>
+                            <div class="col-sm-5 col-md-5">
+                                <select class="form-control select-sort" name="sort"
+                                        th:attr="data-url=@{/system/menu/sortList}, data-id=${menu?.id}, data-sort=${menu?.sort}" lay-verify="sort"></select>
+
+                                <div class="note">选择菜单之后显示</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group menu-page-button" style="display: none">
+                            <label class="col-sm-3 col-md-3 control-label">btnId
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="col-sm-5 col-md-5">
+                                <input name="btnId" class="form-control required" type="text" th:value="${menu?.btnId}">
+                                <div class="note">例如：btn-add</div>
+                            </div>
+                        </div>
+                        <div class="form-group menu-table-button" style="display: none">
+                            <label class="col-sm-3 col-md-3 control-label">btnOnclick
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="col-sm-5 col-md-5">
+                                <input name="btnOnclick" class="form-control required" type="text" th:value="${menu?.btnOnclick}">
+                                <div class="note">onclick name : add</div>
+                            </div>
+                        </div>
+                        <div class="form-group menu-button-class" style="display: none">
+                            <label class="col-sm-3 col-md-3 control-label">btn样式
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="col-sm-5 col-md-5">
+                                <input id="btnClass" name="btnClass" class="form-control required" type="text" th:value="${menu?.btnClass}">
+                                <div class="note">
+                                    <div class="menu-page-button" style="display: none">
+                                        <button class="btn btn-primary btn-sm" type="button" onclick="btnOpt(this)">
+                                            新增
+                                        </button>
+                                        <button class="btn btn-success btn-sm" type="button" onclick="btnOpt(this)">
+                                            编辑
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" type="button" onclick="btnOpt(this)">
+                                            删除
+                                        </button>
+                                        <button class="btn btn-info btn-sm" type="button" onclick="btnOpt(this)">
+                                            其它
+                                        </button>
+                                        <button class="btn btn-warning btn-sm" type="button" onclick="btnOpt(this)">
+                                            其它
+                                        </button>
+                                        <button class="btn bg-color-blueDark txt-color-white btn-sm" type="button"
+                                                onclick="btnOpt(this)">其它
+                                        </button>
+                                    </div>
+                                    <div class="menu-table-button">
+                                        <button class="btn btn-primary btn-xs" type="button" onclick="btnOpt(this)">
+                                            新增
+                                        </button>
+                                        <button class="btn btn-success btn-xs" type="button" onclick="btnOpt(this)">
+                                            编辑
+                                        </button>
+                                        <button class="btn btn-danger btn-xs" type="button" onclick="btnOpt(this)">
+                                            删除
+                                        </button>
+                                        <button class="btn btn-info btn-xs" type="button" onclick="btnOpt(this)">
+                                            其它
+                                        </button>
+                                        <button class="btn btn-warning btn-xs" type="button" onclick="btnOpt(this)">
+                                            其它
+                                        </button>
+                                        <button class="btn bg-color-blueDark txt-color-white btn-xs" type="button"
+                                                onclick="btnOpt(this)">其它
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-actions zy-form-bottom-btn">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12">
+                                    <button id="btn-cancel" class="btn btn-default" type="button">
+                                        Cancel
+                                    </button>
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fa fa-save"></i>
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div th:replace="common/htmlJS::common_js(~{::script})">
+            <script th:inline="javascript">
+                $(function () {
+                    $("#form").validate({
+                        submitHandler: function (form) {
+                            $('#type').attr("disabled", false);
+                            zy.ajaxSubmit(form, {
+                                url: basePath + '/system/menu/save',
+                                success: function (result) {
+                                    if (result.code == 200) {
+                                        layer.confirm('Success', {
+                                            title: 'Message', icon: 1, closeBtn: 0, btn: ['OK']
+                                        }, function (index) {
+                                            parent.window.location.reload();
+                                            var index = parent.layer.getFrameIndex(window.name);
+                                            parent.layer.close(index);
+                                        });
+                                    } else {
+                                        layer.alert(result.msg, {icon: 2});
+                                    }
+
+                                }
+                            });
+                        }
+
+                    });
+
+                    // 初始化排序下拉选项
+                    var pid = [[${pid}]];
+                    sortRender(pid);
+
+
+                    var type = [[${menu?.type}]];
+                    if (type == 2) {
+                        isShowType2();
+                    } else if (type == 3) {
+                        isShowType3();
+                    }else if (type == 4) {
+                        isShowType4();
+                    }
+
+
+                    $("#select-type").change(function () {
+                        var value = $(this).val();
+                        if (value == 1) {
+                            isShowType1();
+                        } else if (value == 2) {
+                            isShowType2();
+                        } else if (value == 3) {
+                            isShowType3();
+                        }else if (value == 4) {
+                            isShowType4();
+                        }
+
+                    });
+
+
+                });
+
+                function isShowType1() {
+                    $(".menu-button-class").hide();
+                    $(".menu-page-button").hide();
+                    $(".menu-table-button").hide();
+                    $(".menu-url").show();
+                }
+
+                function isShowType2() {
+                    $(".menu-button-class").show();
+                    $(".menu-page-button").show();
+                    $(".menu-table-button").hide();
+                    $(".menu-url").hide();
+                }
+
+                function isShowType3() {
+                    $(".menu-button-class").show();
+                    $(".menu-page-button").hide();
+                    $(".menu-table-button").show();
+                    $(".menu-url").hide();
+                }
+                function isShowType4() {
+                    $(".menu-button-class").hide();
+                    $(".menu-page-button").hide();
+                    $(".menu-table-button").hide();
+                    $(".menu-url").hide();
+                }
+
+                function btnOpt(obj) {
+                    $("#btnClass").val($(obj).attr('class'));
+                }
+
+                // 更新渲染排序下拉选项
+                function sortRender(pid) {
+                    var sort = $(".select-sort");
+                    var id = sort.data('id') ? sort.data('id') : 0;
+                    var url = sort.data('url') + "/" + pid + "/" + id;
+                    $.get(url, function (result) {
+                        var options = '';
+                        var sortNum = Object.keys(result).length;
+                        if(sort.data('sort')){
+                            sortNum = sort.data('sort') - 1;
+                        }
+                        result[0] = "首位";
+                        for(var key in result){
+                            var selected = sortNum == key ? "selected=''" : "";
+                            options += "<option value='"+ key +"' " + selected + ">"+ result[key] +"</option>";
+                        }
+                        sort.html(options);
+                    });
+                }
+
+            </script>
+        </div>
+    </body>
+</html>

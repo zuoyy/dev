@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="/common/head :: header(~{::title},~{::link},~{::style})">
+</head>
+<body>
+
+<div id="content" class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="well">
+                <fieldset>
+                    <legend>
+                        <form class="form-inline" role="form" id="searchForm" name="searchForm"
+                              onkeydown="if(event.keyCode==13){return false;}">
+                            <div class="form-group">
+                                <input type="text" name="keyword" class="form-control table-form-tip" data-toggle="tooltip" data-placement="top" title="Key words"  placeholder="Key words">
+                            </div>
+                            <button id="btn-search" class="btn btn-default" type="button">
+                                <i class="fa fa-search"></i> Search
+                            </button>
+                        </form>
+                    </legend>
+                    <button type="button" th:each="b : ${button.pageButtons}" th:id="${b.btnId}"
+                            th:class="${b.btnClass}" th:text="${b.title}" style="margin-left: 4px;"></button>
+                </fieldset>
+                <table id="datatable" class="table table-striped table-bordered zy-table-ellipsis"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="common/htmlJS::common_js(~{::script})">
+<script th:inline="javascript">
+    var $table, _table;
+    $(function () {
+        $table = $('#datatable');
+        _table = $table.dataTable(
+            $.extend(true, {}, CONSTANT.DATA_TABLES.DEFAULT_OPTION, {
+                ajax: function (data, callback, settings) {
+                    var params = manage.getQueryCondition(data);
+                    zy.ajax({
+                        url: basePath + '/cnextgen/questionnaire/getListPage',
+                        data: params,
+                        success: function (result) {
+                            if (result.code == 200) {
+                                callback(result.data);
+                            } else {
+                                layer.msg(result.msg, {icon: 2,shift: 6});
+                            }
+                        }
+                    });
+
+                },
+                columns: [CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
+                    {
+                        title: "分享会",
+                        data: "title",
+                        width: "180",
+                        className : "ellipsis",
+                        render: CONSTANT.DATA_TABLES.RENDER.ELLIPSIS,
+                        orderable: false
+                    },{
+                        title: "姓名",
+                        data: "name",
+                        width: "80"
+                    }, {
+                        title: "<span title='请对此次分享会的主讲嘉宾进行评价'>问题1</span>",
+                        data: "q1",
+                        width: "80"
+                    }, {
+                        title: "<span title='请对此次分享会的内容进行评价'>问题2</span>",
+                        data: "q2",
+                        width: "80"
+                    }, {
+                        title: "<span title='您认为此次分享会的时间长度是否合适'>问题3</span>",
+                        data: "q3",
+                        width: "80"
+                    }, {
+                        title: "<span title='如果再次邀请这位嘉宾进行分享, 您是否会感兴趣'>问题4</span>",
+                        data: "q4",
+                        width: "80"
+                    }, {
+                        title: "<span title='您希望之后平台的分享会大多在哪些时间段进行'>问题5</span>",
+                        data: "q5",
+                        width: "150"
+                    }, {
+                        title: "<span title='今后您希望平台多推送哪些主题的分享会与内容'>问题6</span>",
+                        data: "q6",
+                        width: "150"
+                    }, {
+                        title: "<span title='今后您希望社群的分享会多以哪些形式进行'>问题7</span>",
+                        data: "q7",
+                        width: "150"
+                    }, {
+                        title: "其他建议",
+                        data: "q8",
+                        width: "150"
+                    }, {
+                        title: "创建时间",
+                        data: "createDate",
+                        width: "130",
+                        render: CONSTANT.DATA_TABLES.RENDER.DATE_TIME
+                    }], iDisplayLength: 100
+            })).api();
+        $table.parent().attr('style', 'overflow-x: auto');
+        // 行点击事件
+        $("tbody", $table).on("click", "tr", function (event) {
+            $(this).addClass("active").siblings().removeClass("active");
+            var item = _table.row(this).data();
+            manage.currentItem = item;
+
+        });
+        //复选框
+        $table.on("change", ":checkbox", function () {
+            if ($(this).is("[name='cb-check-all']")) {
+                $(":checkbox", $table).prop("checked", $(this).prop("checked"));
+            } else {
+                var checkbox = $("tbody :checkbox", $table);
+                $(":checkbox[name='cb-check-all']", $table).prop('checked', checkbox.length == checkbox.filter(':checked').length);
+            }
+        }).on("click", ".td-checkbox", function (event) {
+            !$(event.target).is(":checkbox") && $(":checkbox", this).trigger("click");
+        });
+        //初始化表格搜索框提示
+        manage.init();
+        //条件搜索
+        $("#btn-search").click(function () {
+            _table.draw();
+        });
+
+        $("#btn-add").click(function () {
+            zy.openPage('新增用户','/system/user/add');
+        });
+
+
+    });
+
+    function edit(row) {
+        zy.openPage('编辑用户','/system/user/edit/'+row.id);
+    }
+    function detail(row) {
+        zy.openPage('用户详情',"/system/user/detail/"+row.id);
+    }
+
+    function del(row) {
+        if(row.id=='1'){
+            layer.msg('超级管理员不能删除', {icon: 2,shift: 6});
+            return;
+        }
+        layer.confirm('确定要删除吗', {
+            icon : 3
+        }, function() {
+            zy.ajax({
+                url : basePath+'/system/user/status/delete',
+                data : {ids:row.id},
+                success : function(result) {
+                    if (result.code==200) {
+                        _table.draw(false);
+                        layer.msg(result.msg);
+                    }else{
+                        layer.msg(result.msg, {icon: 2,shift: 6});
+                    }
+                }
+            });
+
+
+        });
+
+    }
+
+</script>
+</div>
+</body>
+</html>

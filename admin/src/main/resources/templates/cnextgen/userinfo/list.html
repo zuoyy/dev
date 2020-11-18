@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="/common/head :: header(~{::title},~{::link},~{::style})">
+</head>
+<body>
+
+<div id="content" class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="well">
+                <fieldset>
+                    <legend>
+                        <form class="form-inline" role="form" id="searchForm" name="searchForm"
+                              onkeydown="if(event.keyCode==13){return false;}">
+                            <div class="form-group">
+                                <input type="text" name="keyword" class="form-control table-form-tip" data-toggle="tooltip" data-placement="top" title="Key words"  placeholder="Key words">
+                            </div>
+                            <button id="btn-search" class="btn btn-default" type="button">
+                                <i class="fa fa-search"></i> Search
+                            </button>
+                        </form>
+                    </legend>
+                    <button type="button" th:each="b : ${button.pageButtons}" th:id="${b.btnId}"
+                            th:class="${b.btnClass}" th:text="${b.title}" style="margin-left: 4px;"></button>
+                </fieldset>
+                <table id="datatable" class="table table-striped table-bordered zy-table-ellipsis"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="common/htmlJS::common_js(~{::script})">
+<script th:inline="javascript">
+    var $table, _table;
+    $(function () {
+
+        $table = $('#datatable');
+        _table = $table.dataTable(
+            $.extend(true, {}, CONSTANT.DATA_TABLES.DEFAULT_OPTION, {
+                ajax: function (data, callback, settings) {
+                    var params = manage.getQueryCondition(data);
+                    zy.ajax({
+                        url: basePath + '/cnextgen/userinfo/getListPage',
+                        data: params,
+                        success: function (result) {
+                            if (result.code == 200) {
+                                callback(result.data);
+                            } else {
+                                layer.msg(result.msg, {icon: 2,shift: 6});
+                            }
+                        }
+                    });
+
+                },
+                columns: [CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
+                    {
+                        title: "一代姓名",
+                        data: "fatherName",
+                        width: "100"
+                    }, {
+                        title: "二代姓名",
+                        data: "username",
+                        width: "120"
+                    }, {
+                        title: "二代年龄",
+                        data: "userAge",
+                        width: "50"
+                    }, {
+                        title: "城市",
+                        data: "city",
+                        width: "80"
+                    }, {
+                        title: "公司",
+                        data: "company",
+                        width: "100"
+                    }, {
+                        title: "活动时间段",
+                        data: "activityTime",
+                        width: "200",
+                        className : "ellipsis",
+                        render: CONSTANT.DATA_TABLES.RENDER.ELLIPSIS
+                    }, {
+                        title: "兴趣领域",
+                        data: "interests",
+                        width: "200"
+                    }, {
+                        title: "兴趣爱好",
+                        data: "hobbys",
+                        width: "200"
+                    }, {
+                        title: "创建时间",
+                        data: "createDate",
+                        width: "130",
+                        render: CONSTANT.DATA_TABLES.RENDER.DATE_TIME
+                    }], iDisplayLength: 100
+            })).api();
+        $table.parent().attr('style', 'overflow-x: auto');
+        // 行点击事件
+        $("tbody", $table).on("click", "tr", function (event) {
+            $(this).addClass("active").siblings().removeClass("active");
+            var item = _table.row(this).data();
+            manage.currentItem = item;
+
+        });
+        //复选框
+        $table.on("change", ":checkbox", function () {
+            if ($(this).is("[name='cb-check-all']")) {
+                $(":checkbox", $table).prop("checked", $(this).prop("checked"));
+            } else {
+                var checkbox = $("tbody :checkbox", $table);
+                $(":checkbox[name='cb-check-all']", $table).prop('checked', checkbox.length == checkbox.filter(':checked').length);
+            }
+        }).on("click", ".td-checkbox", function (event) {
+            !$(event.target).is(":checkbox") && $(":checkbox", this).trigger("click");
+        });
+        //初始化表格搜索框提示
+        manage.init();
+        //条件搜索
+        $("#btn-search").click(function () {
+            _table.draw();
+        });
+
+        $("#btn-add").click(function () {
+            zy.openPage('新增用户','/system/user/add');
+        });
+
+
+    });
+
+    function edit(row) {
+        zy.openPage('编辑用户','/system/user/edit/'+row.id);
+    }
+    function detail(row) {
+        zy.openPage('用户详情',"/system/user/detail/"+row.id);
+    }
+
+    function del(row) {
+        if(row.id=='1'){
+            layer.msg('超级管理员不能删除', {icon: 2,shift: 6});
+            return;
+        }
+        layer.confirm('确定要删除吗', {
+            icon : 3
+        }, function() {
+            zy.ajax({
+                url : basePath+'/system/user/status/delete',
+                data : {ids:row.id},
+                success : function(result) {
+                    if (result.code==200) {
+                        _table.draw(false);
+                        layer.msg(result.msg);
+                    }else{
+                        layer.msg(result.msg, {icon: 2,shift: 6});
+                    }
+                }
+            });
+
+
+        });
+
+    }
+
+</script>
+</div>
+</body>
+</html>

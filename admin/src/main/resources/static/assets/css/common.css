@@ -1,0 +1,44 @@
+.error{
+    color: red;
+}
+.page-iframe{
+    height: calc(100vh - 141px);
+    margin-top: 40px;
+    display:block;
+}
+.content{
+    overflow-x: hidden;
+}
+/* 超长文字单元格省略号显示 */
+.ellipsis{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+}
+.zy-table-ellipsis {
+    table-layout: fixed;
+}
+.zy-page{
+    background:none;
+    background-color: #fff;
+    padding: 0 15px;
+}
+.zy-page-form{
+    padding-top: 30px;
+    margin-bottom: 80px;
+}
+.zy-form-bottom-btn{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:15px;
+    text-align: center;
+}
+
+.zy-detail-table-title {
+    padding: 10px 15px;
+    font-weight: bold;
+    border: 1px solid #c9ced1;
+    border-bottom: none;
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html class="zy-page" xmlns:th="http://www.thymeleaf.org" xmlns:zy="http://zuoyy.com">
+<head th:replace="/common/head :: header(~{::title},~{::link},~{::style})">
+    <title></title>
+
+</head>
+<body class="zy-page">
+<div class="row">
+    <article class="col-sm-12 col-md-6" style="overflow-x: auto;">
+        <header>
+            <h2>基本信息</h2>
+        </header>
+        <table class="table table-bordered zy-table-ellipsis">
+            <tbody>
+            <tr>
+                <th width="80px" class="active">用户编号</th>
+                <td th:text="${user.id}" width="150px"></td>
+                <th width="80px" class="active">用户账号</th>
+                <td th:text="${user.username}" width="150px"></td>
+            </tr>
+            <tr>
+                <th class="active">用户昵称</th>
+                <td th:text="${user.nickname}"></td>
+                <th class="active">用户性别</th>
+                <td th:text="${#dicts.keyValue('USER_SEX', user.sex)}"></td>
+            </tr>
+            <tr>
+                <th class="active">电话号码</th>
+                <td th:text="${user.phone}"></td>
+                <th class="active">电子邮箱</th>
+                <td th:text="${user.email}"></td>
+            </tr>
+            <tr>
+                <th class="active">创建时间</th>
+                <td th:text="${#dates.format(user.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+                <th class="active">最后修改</th>
+                <td th:text="${#dates.format(user.updateDate, 'yyyy-MM-dd HH:mm')}"></td>
+            </tr>
+            <tr>
+                <th class="active">备注</th>
+                <td th:text="${user.remark}" colspan="3"></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </article>
+
+    <article class="col-sm-12 col-md-6" style="overflow-x: auto;">
+        <header>
+            <h2>操作日志</h2>
+        </header>
+        <div th:replace="/common/fragment :: log(${user})"></div>
+    </article>
+</div>
+
+
+<div th:replace="common/htmlJS::common_js(~{::script})">
+    <script></script>
+</div>
+</body>
+</html>

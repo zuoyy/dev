@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="common_js(scripts)">
+
+    <script th:src="@{/assets/js/jquery.min.js}"></script>
+    <script th:src="@{/assets/js/jquery-ui.min.js}"></script>
+    <script th:src="@{/assets/js/app.config.js}"></script>
+    <script th:src="@{/assets/js/bootstrap.min.js}"></script>
+    <script th:src="@{/assets/js/SmartNotification.min.js}"></script>
+    <script th:src="@{/plugins/jquery-touch/jquery.ui.touch-punch.min.js}"></script>
+    <script th:src="@{/assets/js/jquery.validate.js}"></script>
+    <script th:src="@{/assets/js/jquery.form.js}"></script>
+    <script th:src="@{/assets/js/app.js}"></script>
+    <script th:src="@{/plugins/layui/layui.all.js}"></script>
+    <script th:src="@{/plugins/datatables/js/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/plugins/datatables/js/dataTables.bootstrap.min.js}"></script>
+    <script th:src="@{/plugins/datatables/js/constant.js}"></script>
+    <script th:src="@{/plugins/zTree_v3/js/jquery.ztree.core.min.js}"></script>
+    <script th:src="@{/plugins/zTree_v3/js/jquery.ztree.excheck.min.js}"></script>
+    <script th:src="@{/assets/js/common.js}"></script>
+    <script th:src="@{/assets/js/index.js}"></script>
+
+
+    <!--/* Per-page placeholder for additional js */-->
+    <th:block th:replace="${scripts}" />
+</div>
+</html>
