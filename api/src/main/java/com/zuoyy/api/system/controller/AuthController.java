@@ -21,7 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
  * 说明：默认采用系统用户进行登录验证
  * @author zuo
  */
-@RestController("/api/auth")
+@Controller
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
